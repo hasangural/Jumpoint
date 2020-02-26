@@ -1,0 +1,151 @@
+{
+    "properties": {
+        "template": {
+            "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "ServiceId": {
+                    "type": "string",
+                    "maxLength": 4,
+                    "minLength": 4,
+                    "metadata": {
+                        "description": "This parameters is referred to as the resource prefix and describes service names. Example: Platform(P) - Business(B)"
+                    }
+                },
+                "RoleName": {
+                    "type": "string",
+                    "defaultValue": "bastion",
+                    "metadata": {
+                        "description": "This parameters is referred to as the Role Name which will be core, domain controller(dc)"
+                    }
+                },
+                "EnvironmentInstanceId": {
+                    "type": "string",
+                    "maxLength": 3,
+                    "minLength": 3,
+                    "metadata": {
+                        "description": "This parameters is referred to as the resource EnvironmentInstanceId which includes Env and InstanceId. Example: p01, t01"
+                    }
+                },
+                "HowManyUsersRequired": {
+                    "type": "string",
+                    "maxLength": 2,
+                    "minLength": 1,
+                    "metadata": {
+                        "description": "This parameters is referred to as the resource EnvironmentInstanceId which includes Env and InstanceId. Example: p01, t01"
+                    }
+                },
+                "HowManyDaysRequired": {
+                    "type": "string",
+                    "maxLength": 2,
+                    "minLength": 1,
+                    "metadata": {
+                        "description": "This parameters is referred to as the resource EnvironmentInstanceId which includes Env and InstanceId. Example: p01, t01"
+                    }
+                }
+            },
+            "variables": {
+                "functionName": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-func-01'))]",
+                "storageName": "[replace(toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-str-01')),'-','')]",
+                "bootstrapRoleAssignmentId": "[guid(concat(resourceGroup().id, 'contributor'))]",
+                "contributorRoleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Storage/storageAccounts",
+                    "name": "[variables('storageName')]",
+                    "apiVersion": "2018-02-01",
+                    "kind": "StorageV2",
+                    "location": "[resourceGroup().location]",
+                    "sku": {
+                        "name": "Standard_LRS"
+                    }
+                },
+                {
+                    "type": "Microsoft.Web/sites",
+                    "kind": "functionapp",
+                    "name": "[variables('functionName')]",
+                    "apiVersion": "2018-02-01",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+                    ],
+                    "identity": {
+                        "type": "SystemAssigned"
+                    },
+                    "properties": {
+                        "name": "[variables('functionName')]",
+                        "siteConfig": {
+                            "appSettings": [
+                                {
+                                    "name": "AzureWebJobsDashboard",
+                                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), '2015-05-01-preview').key1)]"
+                                },
+                                {
+                                    "name": "AzureWebJobsStorage",
+                                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), '2015-05-01-preview').key1)]"
+                                },
+                                {
+                                    "name": "FUNCTIONS_EXTENSION_VERSION",
+                                    "value": "~2"
+                                },
+                                {
+                                    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), '2015-05-01-preview').key1)]"
+                                },
+                                {
+                                    "name": "WEBSITE_CONTENTSHARE",
+                                    "value": "[concat(toLower(variables('functionName')), 'b86e')]"
+                                },
+                                {
+                                    "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                                    "value": "6.5.0"
+                                }
+                            ]
+                        },
+                        "clientAffinityEnabled": false,
+                        "reserved": false
+                    }
+                },
+                {
+                    "type": "Microsoft.Authorization/roleAssignments",
+                    "apiVersion": "2018-09-01-preview",
+                    "name": "[variables('bootstrapRoleAssignmentId')]",
+                    "dependsOn": [
+                        "[variables('functionName')]"
+                    ],
+                    "properties": {
+                        "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
+                        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('functionName')), '2018-11-01', 'Full').identity.principalId]",
+                        "scope": "[resourceGroup().id]",
+                        "principalType": "ServicePrincipal"
+                    }
+                }
+            ],
+            "outputs": {}
+        },
+        "parameters": {
+            "ServiceId": {
+                "value": "[parameters('ServiceId')]"
+            },
+            "EnvironmentInstanceId": {
+                "value": "[parameters('EnvironmentInstanceId')]"
+            },
+            "RoleName": {
+                "value": "[parameters('x-Bastion_RoleName')]"
+            },
+            "HowManyUsersRequired": {
+                "value": "[parameters('x-Function_HowManyUsersRequired')]"
+            },
+            "HowManyDaysRequired": {
+                "value": "[parameters('x-Function_HowManyDaysRequired')]"
+            }
+        },
+        "dependsOn": [],
+        "resourceGroup": "xBastionResourceGroup",
+        "displayName": "Provisioning Azure Function for maintaining and remedation tasks",
+        "description": ""
+    },
+    "kind": "template",
+    "type": "Microsoft.Blueprint/blueprints/artifacts"
+}

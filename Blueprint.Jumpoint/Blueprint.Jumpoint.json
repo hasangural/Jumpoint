@@ -1,0 +1,108 @@
+{
+  "properties": {
+    "parameters": {
+      "ServiceId": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Service Id is an identity that can be used by an application or service.",
+          "description": "ServiceId must be a letter. For example: 'c' - 'p'"
+        }
+      },
+      "EnvironmentInstanceId": {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3,
+        "metadata": {
+          "displayName": "Environment Instance Id is an identity that can be used by an Environment Level.",
+          "description": "This parameters is referred to as the resource EnvironmentInstanceId which includes Env and InstanceId. Example: p01, t01"
+        }
+      },
+      "x-Bastion_RemoteNetworkName": {
+        "type": "string",
+        "defaultValue": "s823d01-vn-01",
+        "metadata": {
+          "displayName": "Name of Remote Virtual Network",
+          "description": "It will be using for peering for Core Virtual Network."
+        }
+      },
+      "x-Bastion_RemoteNetworkResourceGroup": {
+        "type": "string",
+        "defaultValue": "s823d01-core",
+        "metadata": {
+          "displayName": "Resource Group Name of Remote Virtual Network",
+          "description": "ıt will be using for peering for Core Virtual Network."
+        }
+      },
+      "x-Bastion_RoleName": {
+        "type": "string",
+        "defaultValue": "bastion",
+        "metadata": {
+          "displayName": "Name of Prefix for Bastion Resources.",
+          "description": "This parameters is referred to as the Role Name which will be bastion, jumpoint"
+        }
+      },
+      "x-Function_HowManyUsersRequired": {
+        "type": "string",
+        "defaultValue": "1",
+        "metadata": {
+          "displayName": "How Many Users Do you need to require?",
+          "description": "This parameters is referred to as the jumpoint users count."
+        }
+      },
+      "x-Function_HowManyDaysRequired": {
+        "type": "string",
+        "defaultValue": "1",
+        "metadata": {
+          "displayName": "How Many Days Do you need to require?",
+          "description": "This parameters is referred to as the jumpoint when its gonna be deleted."
+        }
+      },
+      "x-VirtualMachines_RequiredJumpboxVms": {
+        "type": "bool",
+        "defaultValue": true,
+        "metadata": {
+          "displayName": "Do you need to require complaint Jumpoint VMs",
+          "description": "This parameters is referred to as the jumpoint vms deployment"
+        }
+      },
+      "x-VirtualMachines_TemporaryPassword": {
+        "type": "securestring",
+        "metadata": {
+          "displayName": "What will be password for Jumpoint VMs",
+          "description": "This parameters is referred to as the jumpoint vms password."
+        }
+      },
+      "resource-group-location": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Jumpoint VMs Zone Location"
+        },
+        "defaultValue": "westeurope",
+        "allowedValues": [
+          "uksouth",
+          "ukwest",
+          "northeurope",
+          "westeurope"
+        ]
+      }
+    },
+    "resourceGroups": {
+      "xBastionResourceGroup": {
+        "name": "[concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-bastion')]",
+        "location": "[parameters('resource-group-location')]",
+        "metadata": {
+          "displayName": "Jumpoint VMs with Azure Bastion - Preview Version 1.0"
+        },
+        "dependsOn": []
+      }
+    },
+    "targetScope": "subscription",
+    "status": {
+      "timeCreated": "2019-11-07T11:00:10+00:00",
+      "lastModified": "2019-11-07T11:00:10.0936644+00:00"
+    },
+    "displayName": "Jumpoint VMs with Azure Bastion - Preview Version 1.0",
+    "description": "Deploys and configures Azure infrastructure and policies mapped to specific ISO controls."
+  },
+  "type": "Microsoft.Blueprint/blueprints"
+}

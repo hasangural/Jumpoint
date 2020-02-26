@@ -1,0 +1,85 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ServiceId": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "metadata": {
+                "description": "This parameters is referred to as the resource prefix and describes service names. Example: Platform(P) - Business(B)"
+            }
+        },
+        "EnvironmentInstanceId": {
+            "type": "string",
+            "maxLength": 3,
+            "minLength": 3,
+            "metadata": {
+                "description": "This parameters is referred to as the resource EnvironmentInstanceId which includes Env and InstanceId. Example: p01, t01"
+            }
+        },
+        "RoleName": {
+            "type": "string",
+            "defaultValue": "bastion",
+            "metadata": {
+                "description": "This parameters is referred to as the Role Name which will be core, domain controller(dc)"
+            }
+        },
+        "RemoteNetworkName": {
+            "type": "string",
+            "defaultValue": "s823d01-vn-01",
+            "metadata": {
+                "description": "This parameters is referred to as the Role Name which will be core, domain controller(dc)"
+            }
+        },
+        "RemoteNetworkResourceGroup": {
+            "type": "string",
+            "defaultValue": "s823d01-rg-01",
+            "metadata": {
+                "description": "This parameters is referred to as the Role Name which will be core, domain controller(dc)"
+            }
+        },
+        "RequiredJumpboxVms": {
+            "defaultValue": true,
+            "allowedValues": [
+                true,
+                false
+            ],
+            "type": "bool"
+        },
+        "RemoteUserCount": {
+            "type": "string",
+            "defaultValue": "1",
+            "allowedValues": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+            ],
+            "metadata": {
+                "description": "This parameters is referred that how many users you will have on jumpbox"
+            }
+        },
+        "TemporaryPassword": {
+            "type": "securestring"
+        }
+
+    },
+    "variables": {
+        "templates" :{
+            ""
+        }
+    },
+    "resources": [
+
+
+    ],
+    "outputs": {
+    }
+}
