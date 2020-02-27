@@ -45,8 +45,8 @@
                 "AccessPolicy-Object-Id": {
                     "type": "string",
                     "metadata": {
-                      "displayName": "AAD object ID",
-                      "description": "AAD object ID of the user that requires access to Key Vault. To retrieve this value go to Microsoft Azure Portal > Azure Active Directory > Users > (user) and copy the User’s Object ID"
+                        "displayName": "AAD object ID",
+                        "description": "AAD object ID of the user that requires access to Key Vault. To retrieve this value go to Microsoft Azure Portal > Azure Active Directory > Users > (user) and copy the User’s Object ID"
                     }
                 },
                 "RequiredJumpboxVms": {
@@ -88,17 +88,11 @@
                 },
                 "vNET_Subnets_Info": [
                     {
-                        "vNET_Subnet_Name": "AzureBastionSubnet",
-                        "vNET_Subnet_CIDR": "[concat(variables('vNET_Info').vNET_AddressSpace,'.0/28')]",
-                        "vNET_Subnet_NSG": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'), '-nsg-01'))]"
-                    },
-                    {
                         "vNET_Subnet_Name": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'), '-sn-02'))]",
                         "vNET_Subnet_CIDR": "[concat(variables('vNET_Info').vNET_AddressSpace,'.16/28')]",
                         "vNET_Subnet_NSG": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'), '-nsg-02'))]"
                     }
                 ],
-                "virtual-machine-user-name": "vAdmin",
                 "antimalware-extension-name": "IaaSAntimalware",
                 "diagnostics-extension-name": "IaaSDiagnostics",
                 "networkWatcher-extension-name": "NetworkWatcher",
@@ -108,10 +102,10 @@
                 "wad-cfgx-start": "[concat(variables('wad-logs'), variables('wad-perf-counters1'), variables('wad-perf-counters2'), '<Metrics resourceId=\"')]",
                 "wad-metrics-resource-id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name , '/providers/', 'Microsoft.Compute/virtualMachines/')]",
                 "wad-cfgx-end": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>",
-                "diagnostic-storageAccount-prefix": "[concat(replace(variables('virtual-machine-prefix'), '-', ''), 'diag-01')]",
+                "diagnostic-storageAccount-id": "[resourceId('Microsoft.Storage/storageAccounts/', variables('diagnostic-storageAccount-name'))]",
                 "uniqueString": "[uniqueString(subscription().id, variables('virtual-machine-prefix'))]",
-                "network-interface-name": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-nic-'))]",
-                "diagnostic-storageAccount-name": "[toLower(substring(replace(concat(variables('diagnostic-storageAccount-prefix'), variables('uniqueString'), variables('uniqueString')), '-', ''), 0, 23) )]",
+                "network-interface-name": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-nic-01'))]",
+                "diagnostic-storageAccount-name": "[replace(toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-str-01')),'-','')]",
                 "virtual-machine-prefix": "[toLower(concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-', parameters('RoleName'),'-vm-'))]",
                 "availabilitySet-name": "[concat(variables('virtual-machine-prefix'), 'as-01')]",
                 "userCountTable": {
@@ -126,8 +120,8 @@
                     "9": 5,
                     "10": 5
                 },
-                "subnet-id": "[concat(resourceId(variables('vNET_Info').resourceGroup, 'Microsoft.Network/virtualNetworks',  variables('vNET_Info').vNET_Name), '/subnets/', variables('vNET_Subnets_Info')[1].vNET_Subnet_Name)]",
-                "key-vault-name": "[concat(parameters('OrganizationId'),'-',parameters('ServiceId'),'103',parameters('EnvironmentInstanceId'), '-', parameters('RoleName'),'-kv-01')]",
+                "subnet-id": "[concat(resourceId(variables('vNET_Info').resourceGroup, 'Microsoft.Network/virtualNetworks',  variables('vNET_Info').vNET_Name), '/subnets/', 's838d01-jumpoint-sn-02')]",
+                "key-vault-name": "[concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'), '-', parameters('RoleName'),'-kv-01')]",
                 "secrets-object": {
                     "secrets": [
                         {
@@ -142,56 +136,24 @@
                 },
                 "access-policies": [
                     {
-                      "tenantId": "[subscription().tenantId]",
-                      "objectId": "[parameters('AccessPolicy-Object-Id')]",
-                      "permissions": {
-                        "certificates": [
-                          "All"
-                        ],
-                        "keys": [
-                          "All"
-                        ],
-                        "secrets": [
-                          "All"
-                        ]
-                      }
-                    }
-                  ]
-                }
-            },
-            "resources": [
-                {
-                    "comments": "----DIAGNOSTICS STORAGE ACCOUNT-----",
-                    "type": "Microsoft.Storage/storageAccounts",
-                    "name": "[variables('diagnostic-storageAccount-name')]",
-                    "apiVersion": "2018-07-01",
-                    "location": "[resourceGroup().location]",
-                    "kind": "StorageV2",
-                    "sku": {
-                        "name": "Standard_LRS"
-                    },
-                    "tags": {
-                        "PlatformService": "CIF - Management Resource"
-                    },
-                    "properties": {
-                        "encryption": {
-                            "keySource": "Microsoft.Storage",
-                            "services": {
-                                "blob": {
-                                    "enabled": true
-                                },
-                                "file": {
-                                    "enabled": true
-                                }
-                            }
-                        },
-                        "supportsHttpsTrafficOnly": true,
-                        "networkAcls": {
-                            "bypass": "AzureServices",
-                            "defaultAction": "Deny"
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[parameters('AccessPolicy-Object-Id')]",
+                        "permissions": {
+                            "certificates": [
+                                "All"
+                            ],
+                            "keys": [
+                                "All"
+                            ],
+                            "secrets": [
+                                "All"
+                            ]
                         }
                     }
-                },
+                ],
+                "vault-sku": "Premium"
+            },
+            "resources": [
                 {
                     "type": "Microsoft.KeyVault/vaults",
                     "name": "[variables('key-vault-name')]",
@@ -207,7 +169,7 @@
                         "tenantId": "[subscription().tenantId]",
                         "accessPolicies": "[variables('access-policies')]",
                         "sku": {
-                            "name": "[parameters('vault-sku')]",
+                            "name": "[variables('vault-sku')]",
                             "family": "A"
                         }
                     },
@@ -228,7 +190,7 @@
                                         "enabled": true,
                                         "retentionPolicy": {
                                             "enabled": true,
-                                            "days": "[parameters('DataRetention')]"
+                                            "days": 365
                                         }
                                     }
                                 ],
@@ -238,7 +200,7 @@
                                         "enabled": true,
                                         "retentionPolicy": {
                                             "enabled": true,
-                                            "days": "[parameters('DataRetention')]"
+                                            "days": 365
                                         }
                                     }
                                 ]
@@ -263,16 +225,13 @@
                 },
                 {
                     "type": "Microsoft.Network/networkInterfaces",
-                    "name": "[concat(variables('network-interface-name'), padleft(add(copyindex(),1),2,'0'))]",
+                    "name": "[concat(variables('network-interface-name'),'-vm-',padleft(add(copyindex(),1),2,'0'))]",
                     "apiVersion": "2016-03-30",
                     "location": "[resourceGroup().location]",
                     "copy": {
                         "name": "nicLoop",
                         "count": "[variables('userCountTable')[parameters('RemoteUserCount')]]"
                     },
-                    "dependsOn": [
-                        "[variables('vNET_Info').vNET_Name]"
-                    ],
                     "properties": {
                         "ipConfigurations": [
                             {
@@ -324,7 +283,7 @@
                                 "version": "latest"
                             },
                             "osDisk": {
-                                "name": "[toLower(concat(variables('virtual-machine-prefix'), 'os-disk-',padleft(add(copyindex(),1),2,'0')))]",
+                                "name": "[toLower(concat(variables('virtual-machine-prefix'),padleft(add(copyindex(),1),2,'0'),'-os-disk-01'))]",
                                 "createOption": "FromImage",
                                 "managedDisk": {
                                     "storageAccountType": "Premium_LRS"
@@ -334,17 +293,18 @@
                         },
                         "osProfile": {
                             "computerName": "[substring(concat(variables('virtual-machine-prefix'), padleft(add(copyindex(),1),2,'0')),14)]",
-                            "adminUsername": "[variables('virtual-machine-user-name')]",
+                            "adminUsername": "[parameters('Jumpoint-local-admin-username')]",
                             "windowsConfiguration": {
                                 "provisionVMAgent": true
                             },
-                            "secrets": [],
-                            "adminPassword": "[parameters('TemporaryPassword')]"
+                            "secrets": [
+                            ],
+                            "adminPassword": "[parameters('Jumpoint-local-admin-user-password')]"
                         },
                         "networkProfile": {
                             "networkInterfaces": [
                                 {
-                                    "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('network-interface-name'), padleft(add(copyindex(),1),2,'0')))]"
+                                    "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('network-interface-name'),'-vm-',padleft(add(copyindex(),1),2,'0')))]"
                                 }
                             ]
                         },
@@ -360,17 +320,18 @@
                     },
                     "dependsOn": [
                         "[variables('availabilitySet-name')]",
-                        "[variables('diagnostic-storageAccount-name')]",
-                        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('network-interface-name'), padleft(add(copyindex(),1),2,'0')))]"
-                    ],
+                        "[variables('key-vault-name')]",
+                        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('network-interface-name'),'-vm-',padleft(add(copyindex(),1),2,'0')))]"
+                    ]
+                    /*
                     "resources": [
                         {
                             "type": "extensions",
                             "apiVersion": "2017-03-30",
                             "name": "[variables('antimalware-extension-name')]",
                             "location": "[resourceGroup().location]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'))]"
+                             "dependsOn": [
+                                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'), padleft(add(copyindex(),1),2,'0'))]"
                             ],
                             "properties": {
                                 "publisher": "Microsoft.Azure.Security",
@@ -394,10 +355,10 @@
                             "type": "extensions",
                             "apiVersion": "2017-03-30",
                             "name": "[variables('networkWatcher-extension-name')]",
-                            "location": "[resourceGroup().location]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'))]"
+                             "dependsOn": [
+                                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'), padleft(add(copyindex(),1),2,'0'))]"
                             ],
+                            "location": "[resourceGroup().location]",
                             "properties": {
                                 "publisher": "Microsoft.Azure.NetworkWatcher",
                                 "type": "NetworkWatcherAgentWindows",
@@ -411,8 +372,8 @@
                             "apiVersion": "2017-03-30",
                             "name": "[variables('diagnostics-extension-name')]",
                             "location": "[resourceGroup().location]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'))]"
+                             "dependsOn": [
+                                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtual-machine-prefix'), padleft(add(copyindex(),1),2,'0'))]"
                             ],
                             "properties": {
                                 "publisher": "Microsoft.Azure.Diagnostics",
@@ -432,9 +393,11 @@
                             "condition": "[parameters('RequiredJumpboxVms')]"
                         }
                     ]
+                    */
                 }
             ],
-            "outputs": {}
+            "outputs": {
+            }
         },
         "parameters": {
             "ServiceId": {
@@ -445,6 +408,15 @@
             },
             "RoleName": {
                 "value": "[parameters('x-Bastion_RoleName')]"
+            },
+            "Jumpoint-local-admin-username": {
+                "value": "[parameters('x-VirtualMachines_Jumpoint-local-admin-username')]"
+            },
+            "Jumpoint-local-admin-user-password": {
+                "value": "[parameters('x-VirtualMachines_Jumpoint-local-admin-user-password')]"
+            },
+            "AccessPolicy-Object-Id": {
+                "value": "[parameters('x-VirtualMachines_AccessPolicy-Object-Id')]"
             },
             "RemoteUserCount": {
                 "value": "[parameters('x-Function_HowManyUsersRequired')]"

@@ -4,11 +4,11 @@
   </a>
 </p>
 <h1 align="center">
- Jumpoint VMs using with Azure Bastion - Preview Version 1.0
+ Jumpoint VMs using with Azure Bastion - Public Preview Version 0.1
 </h1>
 
 <h3 align="center">
-  ⚛ 📄 🚀
+ 🌌 📄 🚀
 </h3>
 <h3 align="center">
   Jumpoint is simple solution to access your resources using with Azure Bastion.
@@ -20,14 +20,14 @@
 
 ▶ **Automation.** Provides automation to enable our customers to quickly onboard new features and business services and also to quickly modify existing services.
 
-**📣Note that** Let's understand why do we invent this solution. As you may aware of that  Peered Virtual Network is not supported to use from Azure Bastion Host. – so larger enterprises are ruled out here no one in their right mind will deploy 500 bastion hosts (one per VNet) in a large enterprise. We have aimed this solution to create backend Virtual Network which will be called as jumpoint virtual network and deploying Jumpoint VMs to access accross peered virtual network.
+📣 Let's understand why do we invent this solution. As you may aware of that  Peered Virtual Network is not supported to use from Azure Bastion Host. – so larger enterprises are ruled out here no one in their right mind will deploy 500 bastion hosts (one per VNet) in a large enterprise. We have aimed this solution to create backend Virtual Network which will be called as jumpoint virtual network and deploying Jumpoint VMs to access accross peered virtual network.
 
 ## What’s In This Document
 
 - [What’s In This Document](#whats-in-this-document)
-- [🚀 Get Up and Running in 15 Minutes](#%f0%9f%9a%80-get-up-and-running-in-15-minutes)
+- [🚀 Get Up and Running Jumpoint in 15 Minutes](#%f0%9f%9a%80-get-up-and-running-jumpoint-in-15-minutes)
 
-## 🚀 Get Up and Running in 15 Minutes
+## 🚀 Get Up and Running Jumpoint in 15 Minutes
 
   You can get a new Gatsby site up and running on your local dev environment in 5 minutes with these four steps:
 
