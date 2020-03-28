@@ -29,7 +29,7 @@
 
 ## 🚀 Get Up and Running in 15 Minutes
 
-  You can get a new Gatsby site up and running on your local dev environment in 5 minutes with these four steps:
+  You can get a new Jumpoint Resource  up and running on your cloud environment in 15 minutes with these four steps:
 
 1. **Install the Azure Powershell which is called as 'AZ'**
 
