@@ -91,7 +91,7 @@
         "name": "[concat(parameters('ServiceId'),parameters('EnvironmentInstanceId'),'-bastion')]",
         "location": "[parameters('resource-group-location')]",
         "metadata": {
-          "displayName": "Jumpoint VMs with Azure Bastion - Preview Version 1.0"
+          "displayName": "VMs with Azure Bastion - Preview Version 1.0"
         },
         "dependsOn": []
       }

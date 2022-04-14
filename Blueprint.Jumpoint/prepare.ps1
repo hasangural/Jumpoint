@@ -12,3 +12,4 @@ Manage-AzureRMBlueprint.ps1 -ModuleMode Az -mode Import -ImportDir .\Blueprint.J
 New-AzBlueprint -Name 'Blueprint.Jumpoint' -BlueprintFile .\Blueprint.Jumpoint.json
 
               
+

@@ -1,8 +1,3 @@
-<p align="center">
-  <a href="https://hasangural.com">
-    <img alt="Nimbus" src="https://is1-ssl.mzstatic.com/image/thumb/Purple123/v4/23/dd/86/23dd8688-9602-b2e0-42d3-f912f1764a9f/AppIcon-0-1x_U007emarketing-0-85-220-7.png/230x0w.png" width="100" />
-  </a>
-</p>
 <h1 align="center">
  Jumpoint VMs using with Azure Bastion - Preview Version 1.0
 </h1>
